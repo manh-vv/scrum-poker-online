@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- load MUI -->
+    <link
+      href="//cdn.muicss.com/mui-0.9.43/css/mui.min.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <script src="//cdn.muicss.com/mui-0.9.43/js/mui.min.js"></script>
+
+    <title>Scrum pocker online</title>
+  </head>
+
+  <body>
+    <div id="app">
+      <div class="mui-container">
+        <div class="mui-row">
+          <div class="mui-col-md-8">
+            <form-create-room></form-create-room>
+          </div>
+        </div>
+
+        <div class="mui-row" v-if="availableRoom.rooms.length > 0">
+          <div class="mui-col-md">
+            <h2>Room list</h2>
+          </div>
+          <div
+            class="mui-col-md-3"
+            v-for="room in availableRoom.rooms"
+            :key="room.name"
+          >
+            <card-room :name="room.name"></card-room>
+          </div>
+        </div>
+
+        <div class="mui-row" v-if="curRoom">
+          <div class="mui-col-md">
+            <h2>User list</h2>
+          </div>
+
+          <div
+            class="mui-col-md-3"
+            v-for="user in curRoom.joinedMembers"
+            :key="user.name"
+          >
+            <card-user :name="user.name"></card-user>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TODO should use production version, optimized for size and speed -->
+    <script src="./libs/vue.js"></script>
+
+    <script type="text/x-template" id="form-create-room">
+      <form class="mui-form" @submit.prevent="onSubmit">
+        <legend>Create Room</legend>
+        <div class="mui-textfield">
+          <input v-model="roomName" type="text" placeholder="Room name">
+        </div>
+
+        <div class="mui-textfield">
+          <input v-model="yourName" type="text" placeholder="Your name">
+        </div>
+
+        <button type="submit" class="mui-btn mui-btn--raised">GO</button>
+      </form>
+    </script>
+
+    <script type="text/x-template" id="card-room">
+      <div class="mui-panel">
+        <div>
+          {{name}}
+        </div>
+      </div>
+    </script>
+
+    <script type="text/x-template" id="card-user">
+      <div class="mui-panel">
+        <div>
+          {{name}}
+        </div>
+      </div>
+    </script>
+
+    <script src="./index.js"></script>
+  </body>
+</html>
