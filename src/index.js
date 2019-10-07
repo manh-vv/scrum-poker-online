@@ -22,7 +22,9 @@ function onLoad() {
   Vue.component('card-room', {
     template: '#card-room',
     data: function() {
-      return {};
+      return {
+        roomName: this.$root.curRoom ? this.$root.curRoom.name : '',
+      };
     },
     props: ['name'],
   });

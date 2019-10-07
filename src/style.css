@@ -1,0 +1,21 @@
+.mg-t {
+  margin-top: 1rem;
+}
+
+h1,
+h2 {
+  text-align: center;
+}
+
+.middle {
+  display: flex;
+  justify-content: center;
+}
+
+.float-right {
+  float: right;
+}
+
+.mg-r {
+  margin-right: 2rem;
+}
