@@ -11,3 +11,7 @@ yarn
 # start development
 yarn start
 ```
+
+## Firebase host
+
+https://scrum-poker-tada.firebaseapp.com
