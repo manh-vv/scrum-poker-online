@@ -11,7 +11,9 @@
       rel="stylesheet"
       type="text/css"
     />
+
     <script src="//cdn.muicss.com/mui-0.9.43/js/mui.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.0"></script>
 
     <title>Scrum pocker online</title>
   </head>
@@ -54,9 +56,6 @@
       </div>
     </div>
 
-    <!-- TODO should use production version, optimized for size and speed -->
-    <script src="./libs/vue.js"></script>
-
     <script type="text/x-template" id="form-create-room">
       <form class="mui-form" @submit.prevent="onSubmit">
         <legend>Create Room</legend>
@@ -87,7 +86,5 @@
         </div>
       </div>
     </script>
-
-    <script src="./index.js"></script>
   </body>
 </html>
