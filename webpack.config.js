@@ -25,8 +25,10 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
  *
  */
 
+const isProd = process.env.NODE_ENV === 'production';
+
 module.exports = {
-  mode: 'development',
+  mode: isProd ? 'production' : 'development',
   entry: './src/index.js',
 
   output: {
@@ -39,6 +41,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: './src/index.html',
       showErrors: true,
+      minify: isProd,
     }),
   ],
 
