@@ -1,3 +1,5 @@
+import './style.scss';
+
 /**
  * run this function after document is loaded
  */
