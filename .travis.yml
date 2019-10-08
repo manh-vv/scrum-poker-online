@@ -1,0 +1,12 @@
+language: node_js
+node_js:
+  - stable
+
+deploy:
+  provider: firebase
+  token:
+    secure: GUXUCOU8ai7Ts4UaQMWCDAU6PBcHKPCwZ8QYEQvR/6Tt1mB4NBFCYxUx7Xyf57hNfsbaPhayTDCNAKduK7EwOrhFh8dBrkDSij63GgZobkWo0qCCGPDY1wdYNGYuvxetETNyJgB2Bdzl/e+6Zl29J+wfPvz3mX0ofx2uMQacKnBAdtIfmsJkZmzrXy/UBhrMeZCsyJ1GRxJ3oFRqKI8Jrj5fwm60+ZatPOWskoQfUWVMiCJhc2m30Cvshtlp8+dAMtn/lQmA2eAA3t7gH48Bl62Rm/FcDLnAtG/TJXfTozFllXLsh2YXZacEnDQd4+PxNW8GkD5PunbVStGrjHBpzBIx6ldpCs6pvqlOHuEC1AvtnQOShllgV/fbB9RIXjbqwcJc1DqCYbMlNcZKtExMXTxkbqXhoGQNvDTOgzxwBHPFYeOX2KBOymI31Z0TQsNzlS9gbC0VZEIFVx4bPN5L53aDG8B3X5m9MEiasXEgbDBVPp1Gfsy+W3lUfGwqbOmEDyWL3gAUJhS6niW2uVqz0SXSlaUOO9s9QlEByKu4wHKJZtBx3Dt0+1t36fcEryKKdVXiCBIeF3zjh1KmngoHtnNlovx9WdEX6mI1k74OHO82fMg75tm7tfaIAW28/Um1SfcV6W3C6fKgWcXlsA0aUrVJXqTLYzzEjKb992ma/YY=
+  project: 'scrum-poker-tada'
+  message: 'New version of scrum-poker-tada was deployed'
+  on:
+    branch: master
