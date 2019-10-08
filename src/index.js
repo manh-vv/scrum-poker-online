@@ -8,7 +8,6 @@ const refAvailableRoom = db.ref('availableRoom/');
  */
 function onLoad() {
   console.debug('---- on load');
-
   Vue.component('form-create-room', {
     template: '#form-create-room',
     data: function() {
@@ -58,7 +57,7 @@ function onLoad() {
          * `room` means all member in room can see
          */
         syncScope: 'global',
-        rooms: [],
+        rooms: {},
       },
 
       /**
@@ -70,9 +69,16 @@ function onLoad() {
       const _this = this;
       _this.$nextTick(function() {
         refAvailableRoom.on('value', snapshot => {
-          const avr = snapshot.val();
-          avr.isSync = true;
-          _this.availableRoom = avr;
+          _this.availableRoom = {
+            /**
+             * sync scope show how data is synced
+             * `global` means all user can see
+             * `room` means all member in room can see
+             */
+            syncScope: 'global',
+            rooms: {},
+            ...snapshot.val(),
+          };
         });
       });
     },
@@ -100,11 +106,9 @@ function onLoad() {
        */
       createRoom: function(roomName, yourName) {
         // reject if room had been existed
-        const idx = this.availableRoom.rooms.findIndex(
-          r => r.name === roomName
-        );
-        if (idx !== -1) {
+        if (this.availableRoom.rooms[roomName]) {
           console.error('Room with the same name had been existed');
+          alert('Room with the same name had been existed');
           return;
         }
 
@@ -112,7 +116,7 @@ function onLoad() {
         this.curRoom = createRoomObj({ name: roomName });
 
         // update available rooms
-        this.availableRoom.rooms.push(this.curRoom);
+        this.availableRoom.rooms[roomName] = this.curRoom;
 
         this.addMeAsMember(roomName, yourName, true, true);
 
@@ -130,19 +134,21 @@ function onLoad() {
        * @param isAdmin true if you want to set user as admin of the room
        */
       addMeAsMember: function(roomName, yourName, disableSync, isAdmin) {
-        const room = (this.curRoom = this.availableRoom.rooms.find(
-          r => r.name === roomName
-        ));
+        const room = (this.curRoom = this.availableRoom.rooms[roomName]);
 
         if (!room) {
           console.error('Room with name %s does not exist', roomName);
+          window.alert(`Room with name ${roomName} does not exist`);
           return;
         }
 
         // reject if member with the same name had been existed
-        const idx = room.joinedMembers.findIndex(m => m.name === yourName);
-        if (idx !== -1) {
+
+        if (room.joinedMembers[yourName]) {
           console.error('Member with the same name had been existed', yourName);
+          window.alert(
+            'Member with the same name had been existed ' + yourName
+          );
           return;
         }
 
@@ -153,7 +159,7 @@ function onLoad() {
         });
 
         // update joined members
-        room.joinedMembers.push(this.me);
+        room.joinedMembers[yourName] = this.me;
 
         if (!disableSync) {
           // sync global data
@@ -167,7 +173,19 @@ function onLoad() {
        * @param roomName name of room
        */
       leftRoom: function(roomName) {
-        // TODO left room
+        const room = this.availableRoom.rooms[roomName];
+        if (!room) {
+          return;
+        }
+
+        if (!this.me) {
+          return;
+        }
+
+        delete room.joinedMembers[this.me.name];
+
+        // sync to db
+        refAvailableRoom.set(this.availableRoom);
       },
     },
   });
@@ -193,7 +211,7 @@ function createRoomObj({ name }) {
     /**
      * Array contains all member are joined to current room
      */
-    joinedMembers: [],
+    joinedMembers: {},
   };
 }
 

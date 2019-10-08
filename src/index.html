@@ -30,15 +30,18 @@
               <form-create-room></form-create-room>
               <div
                 class="mui-divider"
-                v-if="availableRoom.rooms.length > 0"
+                v-if="Object.values(availableRoom.rooms).length > 0"
               ></div>
-              <div class="mui-row" v-if="availableRoom.rooms.length > 0">
+              <div
+                class="mui-row"
+                v-if="Object.values(availableRoom.rooms).length > 0"
+              >
                 <div class="mui-col-md">
                   <h2>Room list</h2>
                 </div>
                 <div
-                  class="mui-col-md-5 mui-col-xs-10 mui-col-md-offset-0 mui-col-xs-offset-1"
-                  v-for="room in availableRoom.rooms"
+                  class="mui-col-md-3 mui-col-xs-6 mui-col-md-offset-0 mui-col-xs-offset-0"
+                  v-for="room of availableRoom.rooms"
                   :key="room.name"
                 >
                   <card-room :name="room.name"></card-room>
