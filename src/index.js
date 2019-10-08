@@ -1,4 +1,7 @@
 require('./style.scss');
+const { db } = require('./db');
+
+const refAvailableRoom = db.ref('availableRoom/');
 
 /**
  * run this function after document is loaded
@@ -63,6 +66,16 @@ function onLoad() {
        */
       curRoom: null,
     },
+    mounted: function() {
+      const _this = this;
+      _this.$nextTick(function() {
+        refAvailableRoom.on('value', snapshot => {
+          const avr = snapshot.val();
+          avr.isSync = true;
+          _this.availableRoom = avr;
+        });
+      });
+    },
     methods: {
       /**
        * update estimation
@@ -101,7 +114,10 @@ function onLoad() {
         // update available rooms
         this.availableRoom.rooms.push(this.curRoom);
 
-        this.addMeAsMember(roomName, yourName, true);
+        this.addMeAsMember(roomName, yourName, true, true);
+
+        // sync global data
+        refAvailableRoom.set(this.availableRoom);
       },
 
       /**
@@ -110,9 +126,10 @@ function onLoad() {
        *
        * @param roomName room name
        * @param yourName your user name
+       * @param {boolean} disableSync true sync is turn off
        * @param isAdmin true if you want to set user as admin of the room
        */
-      addMeAsMember: function(roomName, yourName, isAdmin) {
+      addMeAsMember: function(roomName, yourName, disableSync, isAdmin) {
         const room = (this.curRoom = this.availableRoom.rooms.find(
           r => r.name === roomName
         ));
@@ -137,6 +154,11 @@ function onLoad() {
 
         // update joined members
         room.joinedMembers.push(this.me);
+
+        if (!disableSync) {
+          // sync global data
+          refAvailableRoom.set(this.availableRoom);
+        }
       },
 
       /**
