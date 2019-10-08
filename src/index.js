@@ -1,4 +1,4 @@
-import './style.scss';
+require('./style.scss');
 
 /**
  * run this function after document is loaded
