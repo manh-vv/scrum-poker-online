@@ -15,6 +15,7 @@ const webpack = require('webpack');
  */
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
 
 /*
  * We've enabled HtmlWebpackPlugin for you! This generates a html
@@ -43,6 +44,7 @@ module.exports = {
       showErrors: true,
       minify: isProd,
     }),
+    new CopyPlugin([{ from: 'src/assets', to: 'assets' }]),
   ],
 
   module: {
