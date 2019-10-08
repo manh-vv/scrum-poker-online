@@ -2,7 +2,10 @@ language: node_js
 node_js:
   - stable
 
-after_script: yarn build
+script:
+  - yarn test
+  - yarn build
+  - ls dist
 
 deploy:
   provider: firebase
