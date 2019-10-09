@@ -5,7 +5,7 @@ env:
   global:
     secure: XL621U0VbzfS8GyY41tzGylxw6sxdQuVA4GCZn6yusn035JrEV3srbuZqPDhAommXDw6CH03/rNxTF4nXKgGnr2dvIc+TUnoL/bgYs1iZWSMdM/DbYWQdvYq22lrCbCJB6yyl1Z7wlMzEhlxSun3MTPb7AKJQaXUX3u5ZsHKc+/zmvn7Obhgi/dSpXPSQejCiuy2G61INICiR6egiGOxKDTJdA4TKZomsvMsW9WTPQtxwaaujed0bu8nzDJybxSJ+4/byqjX6ZbpC4Az9JuE97Txll6J9YRM9g2+A7zDuI3Ja5JfRqEbiUH30bq0s9byZxu4iLbIXf1Ks37c8EFSunOn/1swisOWGRpid9Z8aapv+QulPABx+FfMkVW/2DWLqf6rFHYYbAi+EvHz59tzEUYCc8mDFUoMuUXC6guRfmsaX9nLY/9rW1zS8XPI7kwSvxHhfsvB7LuYASkR3aBT3P+/kXqeQhnSG+YNOQU8QN+1jaT3sHtYK10CspBpF+ysD4o7Cv/oTAuAdbnaQfhqrQ135LED8EHJlSWVelYFsuVUspr8hlQL/ObbruioZWL1GM29VCGBTlKpPXZGQ8rk/k2r9yl5J0aWjVl6ol+XC2MFMfNO11FusC9XkhK1rD8n/tR1amENkAI83dUiGiWXpRjAmP8KAczNZjlHlEM6iLI=
 cache: yarn
-before-script:
+before_script:
   - yarn global add firebase-tools
 script:
   - yarn test
