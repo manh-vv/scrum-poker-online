@@ -41,37 +41,57 @@
                 </div>
                 <div
                   class="mui-col-md-3 mui-col-xs-6 mui-col-md-offset-0 mui-col-xs-offset-0"
-                  v-for="room of availableRoom.rooms"
-                  :key="room.name"
+                  v-for="name in Object.keys(availableRoom.rooms)"
+                  :key="name"
                 >
-                  <card-room :name="room.name"></card-room>
+                  <card-room :name="name"></card-room>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        <div class="mui-row" v-if="curRoom">
+        <div class="mui-row" v-if="!!curRoom">
           <div class="mui-col-md">
             <h2>Room: {{ curRoom.name }}</h2>
-            <div class="mui-row">
+            <div class="mui-row" v-if="me && me.role ==='admin'">
               <div class="float-right mg-r">
-                <button class="mui-btn mui-btn--primary" id="btn-show">
-                  Show
+                <button
+                  v-on:click="show"
+                  class="mui-btn mui-btn--primary"
+                  id="btn-show"
+                  style="font-size: 28px;"
+                >
+                  🙉
                 </button>
-                <button class="mui-btn mui-btn--danger" id="btn-clear">
-                  Clear
+                <button
+                  v-on:click="clear"
+                  class="mui-btn mui-btn--danger"
+                  id="btn-clear"
+                  style="font-size: 28px;"
+                >
+                  🙊
                 </button>
               </div>
             </div>
           </div>
           <div class="mui-divider"></div>
+          <div class="mui-row">
+            <div class="middle">
+              <form class="mui-form--inline" @submit.prevent="onSubmitTime">
+                <div class="mui-textfield">
+                  <input v-model="point" type="text" />
+                </div>
+                <button class="mui-btn" style="font-size: 28px;">🙈</button>
+              </form>
+            </div>
+          </div>
           <div
             class="mui-col-md-3 mui-col-xs-6 mg-t"
-            v-for="user in curRoom.joinedMembers"
-            :key="user.name"
+            v-for="mem of curRoom.joinedMembers"
+            :key="mem.name"
           >
-            <card-user :name="user.name"></card-user>
+            <card-user :mem="mem"></card-user>
           </div>
         </div>
       </div>
@@ -115,13 +135,13 @@
     <script type="text/x-template" id="card-user">
       <div class="mui-panel">
         <div style="display: flex; justify-content: center;">
-          <div class="middle" style="border-radius: 6%; width: 50px; height: auto; background: #57bf57; color: #fdfdfd; text-align: center">Done</div>
+          <div v-if="mem.point" class="middle" style="border-radius: 6%; width: 50px; height: auto; background: #57bf57; color: #fdfdfd; text-align: center">Done</div>
         </div>
         <h2>
-          {{name}}
+          {{mem.name}}
         </h2>
         <div style="display: flex; justify-content: center;">
-          <h1 class="show" style="text-align: center; color: #3fbeff">1h</h1>
+          <h1 v-if="mem.status === 'show'" class="show" style="text-align: center; color: #3fbeff">{{ mem.point }}</h1>
         </div>
       </div>
     </script>

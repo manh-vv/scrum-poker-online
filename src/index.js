@@ -41,9 +41,12 @@ function onLoad() {
   Vue.component('card-user', {
     template: '#card-user',
     data: function() {
-      return {};
+      return {
+        // isDone: this.$root.curRoom.joinedMembers[this.$root.me.name].status === 'done',
+        // point: this.$root.curRoom.joinedMembers[this.$root.me.name].point
+      };
     },
-    props: ['name'],
+    props: ['mem'],
   });
 
   new Vue({
@@ -71,12 +74,12 @@ function onLoad() {
        * Object contains information of current working room
        */
       curRoom: null,
+      point: '',
     },
     mounted: function() {
       const _this = this;
       _this.$nextTick(function() {
         refAvailableRoom.on('value', snapshot => {
-          const aRoom = snapshot.val();
           _this.availableRoom = {
             /**
              * sync scope show how data is synced
@@ -85,14 +88,11 @@ function onLoad() {
              */
             syncScope: 'global',
             rooms: {},
-            ...aRoom,
+            ...snapshot.val(),
           };
-          if (aRoom.rooms) {
-            Object.keys(aRoom.rooms).forEach(k => {
-              const room = refAvailableRoom.child('rooms').child(k);
-              room.on('child_removed', () => room.remove());
-            });
-          }
+          _this.curRoom = _this.curRoom
+            ? _this.availableRoom.rooms[_this.curRoom.name]
+            : null;
         });
       });
     },
@@ -127,15 +127,23 @@ function onLoad() {
         }
 
         // create member object
-        this.curRoom = createRoomObj({ name: roomName });
+        this.curRoom = createRoomObj();
+        this.curRoom.name = roomName;
 
         // update available rooms
         this.availableRoom.rooms[roomName] = this.curRoom;
 
-        this.addMeAsMember(roomName, yourName, true, true);
+        this.addMeAsMember(roomName, yourName, false, true);
 
         // sync global data
-        refAvailableRoom.set(this.availableRoom);
+        refAvailableRoom.set(this.availableRoom).then(() => {
+          // remove me after has left the room.
+          refAvailableRoom
+            .child('rooms')
+            .child(roomName)
+            .onDisconnect()
+            .remove();
+        });
       },
 
       /**
@@ -179,17 +187,17 @@ function onLoad() {
 
         if (!disableSync) {
           // sync global data
-          refAvailableRoom.set(this.availableRoom);
+          refAvailableRoom.set(this.availableRoom).then(() => {
+            // remove me after has left the room.
+            refAvailableRoom
+              .child('rooms')
+              .child(roomName)
+              .child('joinedMembers')
+              .child(yourName)
+              .onDisconnect()
+              .remove();
+          });
         }
-
-        // remove me if I disconnect to the room
-        refAvailableRoom
-          .child('rooms')
-          .child(this.curRoom.name)
-          .child('joinedMembers')
-          .child(this.me.name)
-          .onDisconnect()
-          .remove();
       },
 
       /**
@@ -212,6 +220,42 @@ function onLoad() {
         // sync to db
         refAvailableRoom.set(this.availableRoom);
       },
+      onSubmitTime: function() {
+        this.me.point = this.point;
+        this.me.status = '';
+        this.$root.updateMember(this.curRoom.name, this.me);
+      },
+      updateMember: function(roomName, member) {
+        refAvailableRoom
+          .child('rooms')
+          .child(roomName)
+          .child('joinedMembers')
+          .child(this.me.name)
+          .set(member);
+      },
+      show: function() {
+        Object.values(this.curRoom.joinedMembers).forEach(mem => {
+          mem['status'] = 'show';
+          refAvailableRoom
+            .child('rooms')
+            .child(this.curRoom.name)
+            .child('joinedMembers')
+            .child(mem.name)
+            .set(mem);
+        });
+      },
+      clear: function() {
+        Object.values(this.curRoom.joinedMembers).forEach(mem => {
+          mem['status'] = 'estimating';
+          mem['point'] = '';
+          refAvailableRoom
+            .child('rooms')
+            .child(this.curRoom.name)
+            .child('joinedMembers')
+            .child(mem.name)
+            .set(mem);
+        });
+      },
     },
   });
 }
@@ -228,11 +272,8 @@ document.addEventListener('DOMContentLoaded', onLoad);
  *
  * @return room object
  */
-function createRoomObj({ name }) {
+function createRoomObj() {
   return {
-    syncScope: 'room',
-    name,
-
     /**
      * Array contains all member are joined to current room
      */
@@ -254,7 +295,7 @@ function createRoomObj({ name }) {
  */
 function createUserObj({
   name,
-  point = '0.5h',
+  point = '',
   status = 'estimating',
   role = 'normal',
 }) {
