@@ -76,6 +76,7 @@ function onLoad() {
       const _this = this;
       _this.$nextTick(function() {
         refAvailableRoom.on('value', snapshot => {
+          const aRoom = snapshot.val();
           _this.availableRoom = {
             /**
              * sync scope show how data is synced
@@ -84,8 +85,14 @@ function onLoad() {
              */
             syncScope: 'global',
             rooms: {},
-            ...snapshot.val(),
+            ...aRoom,
           };
+          if (aRoom.rooms) {
+            Object.keys(aRoom.rooms).forEach(k => {
+              const room = refAvailableRoom.child('rooms').child(k);
+              room.on('child_removed', () => room.remove());
+            });
+          }
         });
       });
     },
@@ -174,6 +181,15 @@ function onLoad() {
           // sync global data
           refAvailableRoom.set(this.availableRoom);
         }
+
+        // remove me if I disconnect to the room
+        refAvailableRoom
+          .child('rooms')
+          .child(this.curRoom.name)
+          .child('joinedMembers')
+          .child(this.me.name)
+          .onDisconnect()
+          .remove();
       },
 
       /**
