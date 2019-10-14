@@ -26,9 +26,16 @@ function onLoad() {
   Vue.component('card-room', {
     template: '#card-room',
     data: function() {
-      return {};
+      return {
+        yourName: '',
+      };
     },
     props: ['name'],
+    methods: {
+      onSubmit: function() {
+        this.$root.addMeAsMember(this.name, this.yourName, false, false);
+      },
+    },
   });
 
   Vue.component('card-user', {
@@ -134,7 +141,7 @@ function onLoad() {
        * @param isAdmin true if you want to set user as admin of the room
        */
       addMeAsMember: function(roomName, yourName, disableSync, isAdmin) {
-        const room = (this.curRoom = this.availableRoom.rooms[roomName]);
+        const room = this.availableRoom.rooms[roomName];
 
         if (!room) {
           console.error('Room with name %s does not exist', roomName);
@@ -152,10 +159,12 @@ function onLoad() {
           return;
         }
 
+        this.curRoom = room;
+
         // create member object
         this.me = createUserObj({
           name: yourName,
-          type: isAdmin ? 'admin' : undefined,
+          role: isAdmin ? 'admin' : 'normal',
         });
 
         // update joined members

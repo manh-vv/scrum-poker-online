@@ -101,9 +101,9 @@
     <script type="text/x-template" id="card-room">
       <div class="mui-panel">
         <h1 style="color: #ca1313; text-align: center">{{ name }}</h1>
-          <form class="mui-form" id="join-room-form">
+          <form class="mui-form" id="join-room-form" @submit.prevent="onSubmit">
             <div class="mui-textfield">
-              <input type="text" name="name" placeholder="Your name" autocomplete="off" maxlength="14" size="14">
+              <input type="text" v-model="yourName" name="name" placeholder="Your name" autocomplete="off" maxlength="14" size="14">
             </div>
             <div style="display: flex; justify-content: center;">
               <button type="submit" class="mui-btn mui-btn--primary">Join</button>
