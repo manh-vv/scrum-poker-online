@@ -33,7 +33,7 @@ module.exports = {
   entry: './src/index.js',
 
   output: {
-    filename: '[name].js',
+    filename: '[name].[chunkhash].js',
     path: path.resolve(__dirname, 'dist'),
   },
 
