@@ -90,9 +90,9 @@ function onLoad() {
             rooms: {},
             ...snapshot.val(),
           };
-          _this.curRoom = _this.curRoom
-            ? _this.availableRoom.rooms[_this.curRoom.name]
-            : null;
+
+          if (!_this.curRoom)
+            _this.curRoom = _this.availableRoom.rooms[_this.curRoom.name];
         });
       });
     },
@@ -223,7 +223,7 @@ function onLoad() {
       onSubmitTime: function() {
         this.me.point = this.point;
         this.me.status = '';
-        this.$root.updateMember(this.curRoom.name, this.me);
+        this.updateMember(this.curRoom.name, this.me);
       },
       updateMember: function(roomName, member) {
         refAvailableRoom
