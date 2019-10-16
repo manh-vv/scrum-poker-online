@@ -75,6 +75,8 @@ function onLoad() {
        */
       curRoom: null,
       point: '',
+      // disable button show while last one have not done.
+      disabled: true,
     },
     mounted: function() {
       const _this = this;
@@ -90,9 +92,16 @@ function onLoad() {
             rooms: {},
             ...snapshot.val(),
           };
-
-          if (!_this.curRoom)
+          if (_this.curRoom && _this.availableRoom.rooms[_this.curRoom.name]) {
             _this.curRoom = _this.availableRoom.rooms[_this.curRoom.name];
+            for (let k in _this.curRoom.joinedMembers) {
+              if (!_this.curRoom.joinedMembers[k].point) {
+                _this.disabled = true;
+                return;
+              }
+            }
+            _this.disabled = false;
+          }
         });
       });
     },
@@ -223,7 +232,8 @@ function onLoad() {
       onSubmitTime: function() {
         this.me.point = this.point;
         this.me.status = '';
-        this.updateMember(this.curRoom.name, this.me);
+        this.$root.updateMember(this.curRoom.name, this.me);
+        this.point = '';
       },
       updateMember: function(roomName, member) {
         refAvailableRoom
@@ -245,6 +255,7 @@ function onLoad() {
         });
       },
       clear: function() {
+        this.canShow = false;
         Object.values(this.curRoom.joinedMembers).forEach(mem => {
           mem['status'] = 'estimating';
           mem['point'] = '';
