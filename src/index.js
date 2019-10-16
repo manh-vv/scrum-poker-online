@@ -8,6 +8,9 @@ const refAvailableRoom = db.ref('availableRoom/');
  */
 function onLoad() {
   console.debug('---- on load');
+  window.onoffline = () => {
+    window.location.reload();
+  };
   Vue.component('form-create-room', {
     template: '#form-create-room',
     data: function() {
@@ -41,10 +44,7 @@ function onLoad() {
   Vue.component('card-user', {
     template: '#card-user',
     data: function() {
-      return {
-        // isDone: this.$root.curRoom.joinedMembers[this.$root.me.name].status === 'done',
-        // point: this.$root.curRoom.joinedMembers[this.$root.me.name].point
-      };
+      return {};
     },
     props: ['mem'],
   });
